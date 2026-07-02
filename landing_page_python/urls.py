@@ -15,8 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include # Importamos o 'include' para conectar outros arquivos de URL
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Conexão com o App:
+    # O primeiro argumento em branco '' significa a Raiz do site (ex: www.meusite.com/).
+    # O include('site_python.urls') diz: "Se o usuário acessar a raiz ou qualquer subpasta que não seja o admin,
+    # mande o Django olhar os caminhos que estão mapeados dentro de site_python/urls.py".
+    path('home/', include('site_python.urls'))
 ]
