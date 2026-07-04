@@ -1,0 +1,106 @@
+<!-- 
+  MÉTODO DJANGO: {% extends "base.html" %}
+  EQUIVALENTE NO REACT: Importar e envolver a página em um componente de Layout (<BaseLayout> ... </BaseLayout>)
+  EXPLICAÇÃO: Esta é a primeira linha obrigatória de um template filho. Ela diz ao Django: 
+  "Pega tudo o que está no arquivo base.html (HTML estrutural, Navbar, Footer) e traz para cá."
+-->
+{% extends "base.html" %} 
+
+<!-- 
+  MÉTODO DJANGO: {% block content %}
+  EQUIVALENTE NO REACT: O preenchimento das props/children do Layout pai.
+  EXPLICAÇÃO: Aqui começa o conteúdo específico desta página. O Django vai pegar tudo o que estiver 
+  daqui até o {% endblock %} e injetar exatamente na janela "content" que deixamos aberta no base.html.
+-->
+{% block content %}
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #fdfdfd;
+    }
+    
+    .head_text {
+        color: white;
+    }
+    
+    .card {
+        box-shadow: 0 16px 48px #E3E7EB;
+    }
+</style>
+
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to my awesome Blog </h3>
+                    <p class="text-light">We Love Django As much as you do..! &nbsp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8 mt-3 left">
+            
+            <!-- 
+              MÉTODO DJANGO: {% for post in post_list %} ... {% endfor %}
+              EQUIVALENTE NO REACT: post_list.map(post => { return ( <Card /> ) })
+              EXPLICAÇÃO: Como você usao o ListView no Python, o Django automaticamente envia a lista 
+              de posts do banco de dados dentro da variável "post_list". Esse laço varre a lista e duplica 
+              a div class="card" para cada post cadastrado no banco.
+            -->
+            {% for post in post_list %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    
+                    <!-- 
+                      MÉTODO DJANGO: {{ post.title }} , {{ post.author }} , {{ post.created_on }}
+                      EQUIVALENTE NO REACT: {post.title} , {post.author} , {post.created_on} (Chaves do JSX)
+                      EXPLICAÇÃO: O uso de duas chaves {{ }} serve para printar (renderizar) uma variável 
+                      na tela. O Django acessa as propriedades do objeto que veio do banco e substitui o texto.
+                    -->
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
+                    
+                    <!-- 
+                      MÉTODO DJANGO: {{ post.content|slice:":200" }}
+                      EQUIVALENTE NO REACT: post.content.slice(0, 200) ou post.content.substring(0, 200)
+                      EXPLICAÇÃO: O caractere "|" (pipe) no Django aplica um "Filtro". O filtro slice:":200" 
+                      diz para o Django cortar o texto do conteúdo e exibir apenas os primeiros 200 caracteres, 
+                      criando aquele resumo perfeito para o card da home.
+                    -->
+                    <p class="card-text">{{post.content|slice:":200" }}</p>
+                    
+                    <!-- 
+                      MÉTODO DJANGO: {% url 'post_detail' post.slug %}
+                      EQUIVALENTE NO REACT: <Link to={`/post/${post.slug}`}>
+                      EXPLICAÇÃO: Cria o link para a página de detalhes do post. Repare que além do nome 
+                      da rota ('post_detail'), nós passamos um argumento dinâmico (post.slug). O Django vai 
+                      usar o slug desse post específico para montar a URL final (ex: /post/meu-primeiro-post/).
+                    -->
+                    <a href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+            </div>
+            {% endfor %} <!-- Fecha o loop do map -->
+            
+        </div>
+        
+        <!-- 
+          MÉTODO DJANGO: {% include 'sidebar.html' %}
+          EQUIVALENTE NO REACT: <Sidebar /> (Renderizar um componente isolado)
+          EXPLICAÇÃO: O comando {% include %} pega um arquivo HTML que está isolado (a barra lateral) 
+          e injeta o código dele exatamente aqui dentro. É a componentização pura para evitar repetição de código!
+          *Nota: O professor envolveu isso dentro de um bloco "sidebar", permitindo que páginas filhas 
+          possam customizar ou deletar a sidebar se quiserem.
+        -->
+        {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
+        
+    </div>
+</div>
+{% endblock %} <!-- Fecha o bloco principal de conteúdo -->

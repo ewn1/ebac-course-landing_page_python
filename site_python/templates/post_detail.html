@@ -1,0 +1,57 @@
+<!-- 
+  MÉTODO DJANGO: {% extends "base.html" %}
+  EQUIVALENTE NO REACT: Importar e envolver no Layout pai (<BaseLayout>)
+  EXPLICAÇÃO: Garante que a página de detalhes herde toda a estrutura global do site (Navbar, Footer, Bootstrap).
+-->
+{% extends 'base.html' %} 
+
+<!-- 
+  MÉTODO DJANGO: {% block content %}
+  EQUIVALENTE NO REACT: Injeção de conteúdo no {children} do Layout
+  EXPLICAÇÃO: Inicia o bloco de conteúdo dinâmico específico para a visualização de um post completo.
+-->
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 card mb-4  mt-3 left  top">
+      <div class="card-body">
+        
+        <!-- 
+          MÉTODO DJANGO: {% block title %} {{ post.title }} {% endblock title %}
+          EXPLICAÇÃO: Aqui o professor fez um "bloco dentro de um bloco". Ele envelopou a variável 
+          do título do post dentro de um bloco chamado 'title'. Isso permite que, se o template pai (base.html) 
+          tivesse uma tag <title> dinâmica na aba do navegador, ela capturaria esse valor automaticamente.
+        -->
+        <h1>{% block title %} {{ post.title }} {% endblock title %}</h1>
+        
+        <!-- 
+          MÉTODO DJANGO: {{ post.author }} | {{ post.created_on }}
+          EQUIVALENTE NO REACT: {post.author} | {post.created_on}
+          EXPLICAÇÃO: Renderiza diretamente o nome do autor e a data de criação desse post específico.
+        -->
+        <p class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
+        
+        <!-- 
+          MÉTODO DJANGO: {{ post.content | safe }}
+          EQUIVALENTE NO REACT: dangerouslySetInnerHTML={{ __html: post.content }}
+          EXPLICAÇÃO CRÍTICA: Por padrão, o Django barra qualquer código HTML vindo do banco de dados 
+          por segurança (contra ataques de XSS). O filtro "| safe" diz ao Django: "Pode confiar, esse texto 
+          veio do nosso editor de texto do Admin e pode conter tags HTML (como <p>, <strong>, <img>) que 
+          devem ser interpretadas e renderizadas pelo navegador, e não exibidas como texto puro."
+        -->
+        <p class="card-text ">{{ post.content | safe }}</p>
+        
+      </div>
+    </div>
+    
+    <!-- 
+      MÉTODO DJANGO: {% include 'sidebar.html' %}
+      EQUIVALENTE NO REACT: <Sidebar />
+      EXPLICAÇÃO: Reutiliza o componente de barra lateral nesta página também.
+    -->
+    {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
+  </div>
+</div>
+
+{% endblock content %} <!-- Fecha o bloco de conteúdo principal -->
